@@ -54,6 +54,7 @@ public:
   void setSampleRate(unsigned int pX);
 
   short getDataLength() const;
+  void setDataLength(short pX);
 
   short getSamples() const;
   void setSamples(short pX);

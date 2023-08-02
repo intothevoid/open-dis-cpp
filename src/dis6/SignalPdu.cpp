@@ -24,6 +24,8 @@ void SignalPdu::setSampleRate(unsigned int pX) { _sampleRate = pX; }
 
 short SignalPdu::getDataLength() const { return _data.size(); }
 
+void SignalPdu::setDataLength(short pX) { _dataLength = pX; }
+
 short SignalPdu::getSamples() const { return _samples; }
 
 void SignalPdu::setSamples(short pX) { _samples = pX; }
@@ -40,7 +42,7 @@ void SignalPdu::marshal(DataStream &dataStream) const {
   dataStream << _encodingScheme;
   dataStream << _tdlType;
   dataStream << _sampleRate;
-  dataStream << (short)_data.size();
+  dataStream << (short)_dataLength;
   dataStream << _samples;
   for (auto byte : _data) {
     dataStream << byte;
@@ -57,7 +59,8 @@ void SignalPdu::unmarshal(DataStream &dataStream) {
   dataStream >> _samples;
 
   _data.clear();
-  for (auto idx = 0; idx < _dataLength; ++idx) {
+  const int dataLengthBytes = (_dataLength + 7) / 8; // bits to bytes
+  for (auto idx = 0; idx < dataLengthBytes; ++idx) {
     uint8_t x;
     dataStream >> x;
     _data.push_back(x);
